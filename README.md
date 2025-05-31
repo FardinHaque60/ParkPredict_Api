@@ -6,17 +6,16 @@ A Flask-based API for predicting parking lot fullness using sinusoidal regressio
 
 ```
 ParkPredict/api/
-├── app.py                 # Main application entry point
-├── models/               # Model-related code
-│   └── sinusoidal.py     # Sinusoidal model logic and prediction functions
-├── routes/               # API routes
-│   ├── main.py          # Main routes (home, model loading)
-│   └── predictions.py    # Prediction-related routes
+├── app.py               # Main application entry point
+├── models/              # Model-related code
+│   └── sinusoidal.py    # Sinusoidal model logic and prediction functions
+├── routes/              # API routes
+│   ├── main.py          # Main routes (home, production endpoint)
+│   └── predictions.py   # Prediction-related routes
 ├── utils/               # Utility functions
 │   ├── time_utils.py    # Time conversion utilities
 │   └── state.py         # Shared application state
 ├── templates/           # HTML templates
-└── static/             # Static files (CSS, JS)
 ```
 
 ## Components
@@ -29,13 +28,9 @@ ParkPredict/api/
 ### Routes
 - `routes/main.py`: Handles main application routes
   - `/`: Home page with prediction interface
-  - `/load_models`: Endpoint to load/reload prediction models
-  - `/weights`: Endpoint to get model weights
 
 - `routes/predictions.py`: Handles prediction-related routes
   - `/predict`: Makes predictions for a given timestamp and garage
-  - `/predictions`: Gets prediction history with optional filtering
-  - `/predictions/<garage>`: Gets prediction history for a specific garage
 
 ### Utils
 - `utils/time_utils.py`: Time-related utility functions
@@ -50,29 +45,12 @@ ParkPredict/api/
 - Returns the main prediction interface
 - Automatically loads models if not already loaded
 
-### POST /load_models
-- Reloads the sinusoidal regression models
-- Returns success status and available garages
-
-### GET /weights
-- Returns the sinusoidal regression weights for all garages
-
 ### POST /predict
 - Makes a prediction for a given timestamp and garage
 - Required fields:
   - `timestamp`: ISO format timestamp (YYYY-MM-DDTHH:MM:SS)
   - `garage`: Garage name
 - Returns prediction record with timestamp, garage, and predicted fullness
-
-### GET /predictions
-- Gets prediction history
-- Optional query parameters:
-  - `limit`: Maximum number of predictions to return
-  - `start_date`: Filter predictions after this date
-  - `end_date`: Filter predictions before this date
-
-### GET /predictions/<garage>
-- Gets prediction history for a specific garage
 
 ## Running the API
 

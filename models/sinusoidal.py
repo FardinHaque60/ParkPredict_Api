@@ -1,17 +1,13 @@
 import numpy as np
-import sys
-import os
-
-# TODO reference parent import path here 
-# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 
 from utils.time_utils import get_minutes_from_week_start
+from utils.state import sinusoidal_params
 
 def sinusoidal_model(x, A, B, C, D):
     """Sinusoidal function for curve fitting."""
     return A * np.sin(B * x + C) + D
 
-def predict_sinusoidal(minutes: float, garage: str, sinusoidal_params: dict) -> float:
+def predict_sinusoidal(minutes: float, garage: str) -> float:
     """
     Make prediction using sinusoidal model for specified garage
     """

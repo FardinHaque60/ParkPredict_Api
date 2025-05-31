@@ -158,13 +158,13 @@
             showLoading();
             
             try {
-                // First load models if not already loaded
+                /* First load models if not already loaded
                 const loadResponse = await fetch('/load_models', { method: 'POST' });
                 const loadResult = await loadResponse.json();
                 
                 if (!loadResponse.ok) {
                     throw new Error(loadResult.error || 'Failed to load models');
-                }
+                } */
                 
                 // Make prediction
                 const response = await fetch('/predict', {
