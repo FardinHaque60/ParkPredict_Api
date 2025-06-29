@@ -103,21 +103,13 @@
             <div id="resultContent"></div>
         </div>
 
-        <!-- Recent Predictions -->
         <div class="card">
             <div class="card-body">
                 <h5 class="card-title">Recent Predictions</h5>
                 <div id="predictionHistory">
-                    {% for prediction in prediction_history %}
-                    <div class="history-item">
-                        <strong>{{ prediction.garage }}</strong><br>
-                        Time: {{ prediction.timestamp }}<br>
-                        Predicted Fullness: {{ "%.1f"|format(prediction.predicted_fullness) }}%
-                    </div>
-                    {% endfor %}
                 </div>
             </div>
-        </div>
+        </div> 
     </div>
 
     <script>
@@ -158,14 +150,6 @@
             showLoading();
             
             try {
-                /* First load models if not already loaded
-                const loadResponse = await fetch('/load_models', { method: 'POST' });
-                const loadResult = await loadResponse.json();
-                
-                if (!loadResponse.ok) {
-                    throw new Error(loadResult.error || 'Failed to load models');
-                } */
-                
                 // Make prediction
                 const response = await fetch('/predict', {
                     method: 'POST',
@@ -184,7 +168,7 @@
                     throw new Error(result.error || 'Failed to make prediction');
                 }
                 
-                if (!result.predicted_fullness) {
+                if (!result.predicted_fullness_list) {
                     throw new Error('Invalid prediction result received from server');
                 }
                 
@@ -193,20 +177,23 @@
                 const resultContent = document.getElementById('resultContent');
                 resultDiv.style.display = 'block';
                 resultContent.innerHTML = `
-                    <p><strong>Garage:</strong> ${result.garage}</p>
-                    <p><strong>Time:</strong> ${result.timestamp}</p>
-                    <p><strong>Predicted Fullness:</strong> ${result.predicted_fullness.toFixed(1)}%</p>
+                    <strong>${result.garage}</strong><br>
+                    Time: ${result.timestamp}<br>
+                    Predicted Fullness:<br>
+                    <ul>
+                        <li> decision tree: ${result.predicted_fullness_list[0]}% </li>
+                        <li> gam: ${result.predicted_fullness_list[1]}% </li>
+                        <li> guassian: ${result.predicted_fullness_list[2]}% </li>
+                        <li> knn: ${result.predicted_fullness_list[3]}% </li>
+                        <li> random forest: ${result.predicted_fullness_list[4]}% </li>
+                    </ul>
                 `;
                 
                 // Add to history
                 const historyDiv = document.getElementById('predictionHistory');
                 const newHistoryItem = document.createElement('div');
                 newHistoryItem.className = 'history-item';
-                newHistoryItem.innerHTML = `
-                    <strong>${result.garage}</strong><br>
-                    Time: ${result.timestamp}<br>
-                    Predicted Fullness: ${result.predicted_fullness.toFixed(1)}%
-                `;
+                newHistoryItem.innerHTML = resultContent.innerHTML;
                 historyDiv.insertBefore(newHistoryItem, historyDiv.firstChild);
                 
                 hideLoading();
