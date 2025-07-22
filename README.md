@@ -2,6 +2,16 @@
 
 A FastAPI for predicting parking lot fullness with endpoints using various models.
 
+## Running the API
+
+### Pre-check
+1. Activate venv via `source venv/bin/activate`
+2. install dependencies `pip install -r requirements.txt`
+
+### Running
+1. Run FastAPI app by running `uvicorn app.main:app --reload`
+3. The API will be available at `http://localhost:8000/docs` to test endpoints
+
 ## Project Structure
 
 ```
@@ -14,19 +24,12 @@ ParkPredict/app/
 ├── main.py              # app entry point
 ```
 
-## Components
-
-### ML Model Handling
-models are saved in binaries called pickles which are decoded using a library called joblib. The model helper class is a singleton that lazily loads models as requests come and saves them in memory to use for later requests.
-- `ml_models/load_models.py`: contains singleton class definition and getter method
-- `ml_models/pickles.py`: contains binaries that models are loaded from
-
 ## API Endpoints
 
 ### GET /predict
 - expects: `?timestamp={datetime in iso format}&garage={garage name in string format, ex. North Garage}`
 - response: 
-```json
+```
 {
   timestamp: datetime     # same timestamp as in request
   garage: str             # same garage as in request
@@ -38,7 +41,7 @@ models are saved in binaries called pickles which are decoded using a library ca
 ### GET /predict_all
 - expects: same format as above
 - response: 
-```json
+```
 {
   timestamp: datetime
   garage: str   
@@ -47,15 +50,7 @@ models are saved in binaries called pickles which are decoded using a library ca
 }
 ```
 
-## Running the API
-
-### Pre-check
-1. Activate venv via `source venv/bin/activate`
-2. install dependencies `pip install -r requirements.txt`
-
-### Running
-1. Run FastAPI app by running `uvicorn app.main:app --reload`
-3. The API will be available at `http://localhost:8000/docs` to test endpoints
-
-## Dependencies
-found in `requirements.txt`
+## ML Model Handling
+models are saved in binaries called pickles which are decoded using a library called joblib. The model helper class is a singleton that lazily loads models as requests come and saves them in memory to use for later requests.
+- `ml_models/load_models.py`: contains singleton class definition and getter method
+- `ml_models/pickles.py`: contains binaries that models are loaded from
