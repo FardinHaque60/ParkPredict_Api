@@ -1,0 +1,9 @@
+services:
+  # A web service for a ML prediction model
+  - type: web
+    name: sjsu-parkpredict-api
+    runtime: python
+    plan: free
+    autoDeploy: false
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
