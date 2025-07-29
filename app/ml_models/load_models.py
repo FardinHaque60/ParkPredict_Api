@@ -10,7 +10,9 @@ import threading
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-ml_model = {
+PRODUCTION_MODEL = "random_forest"  # change name of model to use a different model in production endpoints
+GARAGES = ["North Garage", "South Garage", "West Garage"]
+ML_MODELS = {
     "decision_tree": None, 
     "gam": None, 
     "guassian": None, 
@@ -23,14 +25,14 @@ class ModelHelper:
     available_models = []
 
     def __init__(self):
-        global ml_model
-        self.available_models = ml_model.keys()
+        global ML_MODELS
+        self.available_models = ML_MODELS.keys()
 
     def load_ml_model(self, model_name, probabilistic=False):
-        global ml_model
-        if model_name not in ml_model.keys():
+        global ML_MODELS
+        if model_name not in ML_MODELS.keys():
             raise ValueError("model not found")
-        if ml_model[model_name] is None:
+        if ML_MODELS[model_name] is None:
             logger.info(f"loading {model_name} model from pickles/")
             # load model from pickle file
             base_dir = os.path.dirname(__file__)
@@ -40,12 +42,12 @@ class ModelHelper:
             else:
                 file_path += os.path.join(file_path, f"{model_name}.pkl")
             with model_lock:
-                if ml_model[model_name] is None:
-                    ml_model[model_name] = joblib.load(file_path)
+                if ML_MODELS[model_name] is None:
+                    ML_MODELS[model_name] = joblib.load(file_path)
 
-        return ml_model[model_name]
+        return ML_MODELS[model_name]
     
-    def clean_prediction(self, prediction):
+    def clean_prediction(self, prediction) -> float:
         if prediction < 0:
             return 0.0
         elif prediction > 100:
@@ -53,14 +55,16 @@ class ModelHelper:
         else:
             return round(prediction, 1)
     
-    def ml_model(self, model_name, minutes, garage, prob=True):
+    def ml_model(self, model_name, minutes, prob=True) -> dict:
         minutes = np.array(minutes).reshape(1, -1)
         model = self.load_ml_model(model_name, probabilistic=prob)
-        prediction = round(model[garage].predict(minutes).flatten()[0], 1)
-        return self.clean_prediction(prediction)
+        predictions = {}
+        for garage in GARAGES:
+            predictions[garage] = self.clean_prediction(round(model[garage].predict(minutes).flatten()[0], 1))
+        return predictions
     
-    def production_model(self, timestamp, garage):
-        return self.ml_model("random_forest", timestamp, garage)
+    def production_model(self, timestamp) -> dict:
+        return self.ml_model(PRODUCTION_MODEL, timestamp)
     
 model_helper = ModelHelper()
 
