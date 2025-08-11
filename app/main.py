@@ -15,6 +15,6 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["GET"],  # Only allows GET requests
-    allow_headers=["application/json"],  # Only allows 'application/json' header
+    allow_methods=["GET"], 
+    allow_headers=["application/json"],  
 )
