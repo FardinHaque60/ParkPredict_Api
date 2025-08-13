@@ -24,10 +24,14 @@ async def reply_sms(request: Request):
     req = form.get("Body")
 
     response_obj = MessagingResponse()
-    response = generate_response(req)
+    try:
+        response = generate_response(req)
 
-    response_obj.message(response)
-    logger.info(f"RESP sms: {response_obj}")
+        response_obj.message(response)
+        logger.info(f"RESP sms: {response_obj}")
+    except:
+        response_obj.message("Error generating response, try again later")
+        return Response(content=str(response_obj), media_type="application/xml")
 
     return Response(content=str(response_obj), media_type="application/xml")
 
