@@ -13,8 +13,9 @@ logger = logging.getLogger(__name__)
 router = APIRouter()
 model_helper = get_model_helper()
 
-MESSAGE_FORMATS = '''\nq - quick predictions, returns parking garage predictions for the 30 mins, 1 hr, and 2 hrs\n
-p HH:MM AM/PM - returns the predictions for a given time, example: p 10:34 AM\n\nhello - type this to see this dialogue again'''
+MESSAGE_FORMATS = '''\n\nq - quick predictions, gives parking garage predictions for the next 30 mins, 1 hr, and 2 hrs\n
+p HH:MM AM/PM - returns the predictions for a given time, example: p 10:34 AM\n\nhello - enter "hello" to see this message again
+\ncheck out https://sjsuparkpredict.vercel.app/ if you'd prefer a web version!'''
 
 # top level reply method that is called
 @router.post("/reply")
@@ -59,17 +60,17 @@ def generate_response(req):
         
 In the next 30 mins:
 - North Garage: {predictions[30]["North Garage"]}
-- West Garage: {predictions[30]["West Garage"]}
+- West Garage:  {predictions[30]["West Garage"]}
 - South Garage: {predictions[30]["South Garage"]}
 
 In the next 1 hr:
 - North Garage: {predictions[60]["North Garage"]}
-- West Garage: {predictions[60]["West Garage"]}
+- West Garage:  {predictions[60]["West Garage"]}
 - South Garage: {predictions[60]["South Garage"]}
 
 In the next 2 hrs:
 - North Garage: {predictions[120]["North Garage"]}
-- West Garage: {predictions[120]["West Garage"]}
+- West Garage:  {predictions[120]["West Garage"]}
 - South Garage: {predictions[120]["South Garage"]}'''
         
         return response
@@ -92,15 +93,15 @@ In the next 2 hrs:
                 prediction_time = round((end_time - start_time).total_seconds(), 4)
                 logger.info(f"prediction elapsed time: {prediction_time}")
 
-                response = f'''Parking Garage Predictions at {time_str}:\n
+                response = f'''Parking Garage Predictions at {time_str}:
+
 North Garage: {predictions["North Garage"]} 
-West Garage: {predictions["West Garage"]}
-South Garage: {predictions["South Garage"]}
-'''
+West Garage:  {predictions["West Garage"]}
+South Garage: {predictions["South Garage"]}'''
 
                 return response
         return "Please provide a time in the format HH:MM AM/PM (e.g., p 10:34 AM)."
     elif (req[0] == "hello"):
         return f"Welcome to the SJSU park predict sms service! Message me in the following formats to get started: {MESSAGE_FORMATS}"
     else:
-        return f"Hmm don't think I know that one, reference the message formats and try again: {MESSAGE_FORMATS}"
+        return f"Hmm, don't think I know that one, reference the message formats and try again: {MESSAGE_FORMATS}"

@@ -53,7 +53,7 @@ class ModelHelper:
         elif prediction > 100:
             return 100.0
         else:
-            return round(prediction, 1)
+            return round(prediction)
     
     def ml_model(self, model_name, minutes, prob=True) -> dict:
         minutes = np.array(minutes).reshape(1, -1)
