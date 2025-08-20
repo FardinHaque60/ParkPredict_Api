@@ -59,20 +59,19 @@ def generate_response(req):
         response = f'''Parking Garage Predictions:
         
 In the next 30 mins:
-- North Garage: {predictions[30]["North Garage"]}
-- West Garage:  {predictions[30]["West Garage"]}
-- South Garage: {predictions[30]["South Garage"]}
+- North Garage: {predictions[30]["North Garage"]}%
+- West Garage:  {predictions[30]["West Garage"]}%
+- South Garage: {predictions[30]["South Garage"]}%
 
 In the next 1 hr:
-- North Garage: {predictions[60]["North Garage"]}
-- West Garage:  {predictions[60]["West Garage"]}
-- South Garage: {predictions[60]["South Garage"]}
+- North Garage: {predictions[60]["North Garage"]}%
+- West Garage:  {predictions[60]["West Garage"]}%
+- South Garage: {predictions[60]["South Garage"]}%
 
 In the next 2 hrs:
-- North Garage: {predictions[120]["North Garage"]}
-- West Garage:  {predictions[120]["West Garage"]}
-- South Garage: {predictions[120]["South Garage"]}'''
-        
+- North Garage: {predictions[120]["North Garage"]}%
+- West Garage:  {predictions[120]["West Garage"]}%
+- South Garage: {predictions[120]["South Garage"]}%'''
         return response
     elif (req[0] == "p"):
         time_pattern = r"^(0?[1-9]|1[0-2]):[0-5][0-9]\s?(AM|PM|am|pm)$"
@@ -95,9 +94,9 @@ In the next 2 hrs:
 
                 response = f'''Parking Garage Predictions at {time_str}:
 
-North Garage: {predictions["North Garage"]} 
-West Garage:  {predictions["West Garage"]}
-South Garage: {predictions["South Garage"]}'''
+North Garage: {predictions["North Garage"]}%
+West Garage:  {predictions["West Garage"]}%
+South Garage: {predictions["South Garage"]}%'''
 
                 return response
         return "Please provide a time in the format HH:MM AM/PM (e.g., p 10:34 AM)."
