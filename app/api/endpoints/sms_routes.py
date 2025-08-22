@@ -3,7 +3,7 @@ from fastapi import APIRouter
 from twilio.twiml.messaging_response import MessagingResponse
 from fastapi import Request, Response
 import re
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from app.utils.lib import get_minutes_from_week_start
 from app.ml_models.load_models import get_model_helper
 
@@ -41,7 +41,8 @@ def generate_response(req):
 
     if (req[0] == "q"):
         # Get minutes from week start
-        timestamp = datetime.now()
+        pacific = timezone(timedelta(hours=-7))
+        timestamp = datetime.now(pacific)
         minutes = get_minutes_from_week_start(timestamp)
         
         # Make predictions
