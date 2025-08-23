@@ -6,6 +6,7 @@ import re
 from datetime import datetime, timedelta, timezone
 from app.utils.lib import get_minutes_from_week_start
 from app.ml_models.load_models import get_model_helper
+from app.utils.supabase_client import write_log_to_supabase
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -81,6 +82,13 @@ In the next 2 hrs:
             if re.match(time_pattern, time_str):
                 # Get minutes from week start
                 timestamp = datetime.strptime(time_str, "%I:%M %p")
+
+                try:
+                    write_log_to_supabase(time_str)
+                    logger.info(f"logged custom time input to supabase: {time_str}")
+                except Exception as e:
+                    logger.error(f"failed to log time to supabase: {e}")
+
                 minutes = get_minutes_from_week_start(timestamp)
                 
                 # Make prediction

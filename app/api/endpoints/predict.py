@@ -2,6 +2,7 @@ from fastapi import APIRouter
 from app.models.schemas import PredictionResponse, AllModelsPredictionResponse, QuickPredictionResponse
 from app.utils.lib import get_minutes_from_week_start
 from app.ml_models.load_models import get_model_helper
+from app.utils.supabase_client import write_log_to_supabase
 import logging
 from datetime import datetime
 
@@ -17,6 +18,13 @@ MODELS = model_helper.available_models
 @router.get("/predict", response_model=PredictionResponse)
 def predict(timestamp: datetime):
     logger.info(f"params for predict request: timestamp={timestamp}")
+
+    try:
+        time = timestamp.strftime("%I:%M %p")
+        write_log_to_supabase(time)
+        logger.info(f"logged custom time input to supabase: {time}")
+    except Exception as e:
+        logger.error(f"failed to log time to supabase: {e}")
 
     # Get minutes from week start
     minutes = get_minutes_from_week_start(timestamp)
