@@ -12,8 +12,14 @@ SUPABASE_SERVICE_ROLE_KEY = os.getenv("SUPABASE_SECRET_KEY")
 # Initialize client
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
 
-def write_log_to_supabase(timestamp):
+def write_log_to_supabase(request_made, prediction_request):
+    response = supabase.table("prediction_time_log").select("id", count="exact").execute()
+    entry_count = response.count
+    if entry_count >= 500:
+        raise IndexError("Maximum number of entries (500) in prediction_time_log exceeded.")
+
     data = {
-        "prediction_time": timestamp
+        "timestamp": request_made,
+        "prediction_time": prediction_request
     }
     supabase.table("prediction_time_log").insert(data).execute()
