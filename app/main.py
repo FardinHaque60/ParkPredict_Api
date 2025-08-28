@@ -1,10 +1,11 @@
 from fastapi import FastAPI
-from app.api.endpoints import predict, sms_routes
+from app.api.endpoints import predict, sms_routes, data_viz
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(title="ParkPredict API")
 
 app.include_router(predict.router, prefix="/api")
+app.include_router(data_viz.router, prefix="/api")
 app.include_router(sms_routes.router, prefix="/sms")
 
 origins = [
