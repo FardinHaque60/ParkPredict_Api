@@ -24,8 +24,8 @@ def predict(timestamp: datetime):
         time = timestamp.strftime("%I:%M %p")
         # log request time
         pacific = timezone(timedelta(hours=-7))
-        timestamp = datetime.now(pacific)
-        timestamp_str = timestamp.strftime("%Y-%-m-%-d %I:%M:%S %p")
+        log_timestamp = datetime.now(pacific)
+        timestamp_str = log_timestamp.strftime("%Y-%-m-%-d %I:%M:%S %p")
         write_log_to_supabase(timestamp_str, time)
         logger.info(f"logged custom time input to supabase: {time}")
     except IndexError as e:
