@@ -80,7 +80,10 @@ In the next 2 hrs:
         if len(req) > 2:
             time_str = f"{req[1]} {req[2]}"
             if re.match(time_pattern, time_str):
-                timestamp = datetime.strptime(time_str, "%I:%M %p")
+                pacific = timezone(timedelta(hours=-7))
+                current_date = datetime.now(pacific).date()
+                time_obj = datetime.strptime(time_str, "%I:%M %p").time()
+                timestamp = datetime.combine(current_date, time_obj, tzinfo=pacific)
 
                 try:
                     write_log_to_supabase(time_str)
