@@ -80,7 +80,6 @@ In the next 2 hrs:
         if len(req) > 2:
             time_str = f"{req[1]} {req[2]}"
             if re.match(time_pattern, time_str):
-                # Get minutes from week start
                 timestamp = datetime.strptime(time_str, "%I:%M %p")
 
                 try:
@@ -89,6 +88,7 @@ In the next 2 hrs:
                 except Exception as e:
                     logger.error(f"failed to log time to supabase: {e}")
 
+                # Get minutes from week start
                 minutes = get_minutes_from_week_start(timestamp)
                 
                 # Make prediction

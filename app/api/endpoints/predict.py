@@ -4,7 +4,7 @@ from app.utils.lib import get_minutes_from_week_start
 from app.ml_models.load_models import get_model_helper
 from app.utils.supabase_client import write_log_to_supabase
 import logging
-from datetime import datetime, timedelta, timezone
+from datetime import datetime
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -23,11 +23,7 @@ def predict(timestamp: datetime, mock: bool = False):
         if not mock: # mock is set to skip logging (skipped by scraping script)
             # log prediction request time
             time = timestamp.strftime("%I:%M %p")
-            # log request time
-            pacific = timezone(timedelta(hours=-7))
-            log_timestamp = datetime.now(pacific)
-            timestamp_str = log_timestamp.strftime("%Y-%-m-%-d %I:%M:%S %p")
-            write_log_to_supabase(timestamp_str, time)
+            write_log_to_supabase(time)
             logger.info(f"logged custom time input to supabase: {time}")
     except IndexError as e:
         logger.error(e)
