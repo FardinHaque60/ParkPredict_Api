@@ -16,18 +16,19 @@ MODELS = model_helper.available_models
 
 # PRODUCTION endpoint to make prediction for all garages
 @router.get("/predict", response_model=PredictionResponse)
-def predict(timestamp: datetime):
+def predict(timestamp: datetime, mock: bool = False):
     logger.info(f"params for predict request: timestamp={timestamp}")
 
     try:
-        # log prediction request time
-        time = timestamp.strftime("%I:%M %p")
-        # log request time
-        pacific = timezone(timedelta(hours=-7))
-        log_timestamp = datetime.now(pacific)
-        timestamp_str = log_timestamp.strftime("%Y-%-m-%-d %I:%M:%S %p")
-        write_log_to_supabase(timestamp_str, time)
-        logger.info(f"logged custom time input to supabase: {time}")
+        if not mock: # mock is set to skip logging (skipped by scraping script)
+            # log prediction request time
+            time = timestamp.strftime("%I:%M %p")
+            # log request time
+            pacific = timezone(timedelta(hours=-7))
+            log_timestamp = datetime.now(pacific)
+            timestamp_str = log_timestamp.strftime("%Y-%-m-%-d %I:%M:%S %p")
+            write_log_to_supabase(timestamp_str, time)
+            logger.info(f"logged custom time input to supabase: {time}")
     except IndexError as e:
         logger.error(e)
     except Exception as e:
